@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 8709821437
+      POSTGRES_DB: medusa-3Qdy
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - medusa-network
+
+
+  medusa:
+    build: .
+    environment:
+      NODE_ENV: development
+      DATABASE_TYPE: postgres
+      DATABASE_URL: postgres://postgres:8709821437@localhost/medusa-3Qdy?sslmode=require
+      # MEDUSA_ADMIN_ONBOARDING_TYPE=: default
+      # STORE_CORS: http://localhost:8000,http://localhost:7001
+      # Other environment variables like JWT_SECRET can be added here
+    ports:
+      - "9000:9000"
+    depends_on:
+      - postgres
+    networks:
+      - medusa-network
+
+volumes:
+  pgdata:
+
+networks:
+  medusa-network:
+    driver: bridge
